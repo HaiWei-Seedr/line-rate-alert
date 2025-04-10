@@ -1,4 +1,3 @@
-
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -15,12 +14,18 @@ def home():
 
 @app.route("/callback", methods=['POST'])
 def callback():
-    signature = request.headers["X-Line-Signature"]
+    signature = request.headers.get("X-Line-Signature")
     body = request.get_data(as_text=True)
+
+    print(f"🔍 [DEBUG] Signature: {signature}")
+    print(f"🔍 [DEBUG] Body: {body}")
+
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
+        print("❌ Invalid signature.")
         abort(400)
+
     return 'OK'
 
 @handler.add(MessageEvent, message=TextMessage)

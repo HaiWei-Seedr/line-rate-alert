@@ -5,6 +5,8 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 import os
 
 app = Flask(__name__)
+
+# 從環境變數讀取 Access Token 和 Channel Secret
 line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
 handler = WebhookHandler(os.getenv("LINE_CHANNEL_SECRET"))
 
@@ -14,9 +16,12 @@ def home():
 
 @app.route("/callback", methods=['POST'])
 def callback():
+    # 從 header 抓出 Signature
     signature = request.headers.get("X-Line-Signature")
+    # 抓出請求內容（字串）
     body = request.get_data(as_text=True)
 
+    # 印出除錯資訊
     print(f"🔍 [DEBUG] Signature: {signature}")
     print(f"🔍 [DEBUG] Body: {body}")
 
@@ -28,12 +33,15 @@ def callback():
 
     return 'OK'
 
+# 處理收到的訊息事件
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     msg = event.message.text
+    reply = f"你說了：{msg}"
+    print(f"📨 [REPLY] {reply}")
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=f"你說了：{msg}")
+        TextSendMessage(text=reply)
     )
 
 if __name__ == "__main__":

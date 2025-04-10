@@ -16,12 +16,9 @@ def home():
 
 @app.route("/callback", methods=['POST'])
 def callback():
-    # 從 header 抓出 Signature
     signature = request.headers.get("X-Line-Signature")
-    # 抓出請求內容（字串）
     body = request.get_data(as_text=True)
 
-    # 印出除錯資訊
     print(f"🔍 [DEBUG] Signature: {signature}")
     print(f"🔍 [DEBUG] Body: {body}")
 

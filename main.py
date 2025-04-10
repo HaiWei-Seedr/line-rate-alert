@@ -15,7 +15,7 @@ def home():
 
 @app.route("/callback", methods=['POST'])
 def callback():
-    signature = request.headers.get("X-Line-Signature")
+    signature = request.headers["X-Line-Signature"]
     body = request.get_data(as_text=True)
     try:
         handler.handle(body, signature)
